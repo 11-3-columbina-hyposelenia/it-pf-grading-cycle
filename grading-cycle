@@ -1,0 +1,274 @@
+import java.util.Scanner;
+import java.util.ArrayList;
+
+abstract class user {
+    private String name;
+    private String userRole;
+    
+    public user(String name, String userRole) {
+        this.name = name;
+        this.userRole = userRole;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public String getUserRole() {
+        return userRole;
+    }
+    
+    public abstract void showMenu();
+}
+
+public class grademanager {
+    public String name;
+    public byte year;
+    
+    public static String[] subjects1sty = {"PATHFit 1", "NSTP 1", "CC-100", "CC-101", "IT-NET01", "GE-04", "GE-05", "FIL 1", "GE-07"};
+    private double[] grades1sty = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    public static String[] subjects2ndy = {"PATHFit 3", "IT-PF01", "IT-WS02", "IT-MS", "GE-06", "GE-08", "FIL 3", "CC-103"};
+    private double[] grades2ndy = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    
+    public double[] getGrades1sty() {
+        return grades1sty;
+    }
+    
+    public double[] getGrades2ndy() {
+        return grades2ndy;
+    }
+    
+    public void setGrade(int year, int index, double grade) {
+        if (year == 1) {
+            grades1sty[index] = grade;
+        } else if (year == 2) {
+            grades2ndy[index] = grade;
+        }
+    }
+}
+
+class professor extends user {
+    private double sum; private double avg;
+    private ArrayList<grademanager> students = new ArrayList<>();
+    grademanager gm = new grademanager();
+    
+    public void setSum(double sum) {
+        this.sum = sum;
+    }
+    
+    public void setAvg(double avg) {
+        this.avg = avg;
+    }
+    
+    public double getSum() {
+        return sum;
+    }
+    
+    public double getAvg() {
+        return avg;
+    }
+    
+    public professor(String name) {
+        super(name, "professor");
+    }
+        @Override 
+        public void showMenu() {
+           System.out.println("Welcome! Prof. " + getName());
+           System.out.println("What are we doing today?");
+           System.out.println("1. Input student grades");
+           System.out.println("2. Modify student grades");
+           System.out.println("3. Show student grades");
+           System.out.println("4. Close professor menu and back to login");
+           System.out.print("Enter here: ");
+        }
+        
+        public void inputgrades(Scanner input) {
+            byte year;
+            byte choice;
+            double grade;
+            String name;
+            
+            grademanager gm = new grademanager();
+            
+            do {
+                System.out.print("\033[H\033[2J"); 
+                System.out.println("Please put the accurate info of the student you want to put grade\n");
+                input.nextLine();
+                System.out.print("Name: ");
+                name = input.nextLine();
+                name = name.toLowerCase();
+                System.out.print("College Year: ");
+                year = input.nextByte();
+                input.nextLine(); // the cin.ignore nga java
+                System.out.println("");
+                if (year < 1 || year > 2) {
+                    System.out.print("\033[H\033[2J"); 
+                    System.out.println("Invalid choice, please choose between 1 or 2. as the higher year feature is currently in development.");
+                    System.out.println("Press enter to continue: ");
+                    input.nextLine();
+                }
+            } while (year < 1 || year > 2);
+   
+            if (year == 1) {
+                do {
+                    System.out.println("Please select an subject to put grade");
+                    for (int x = 0; x < gm.subjects1sty.length; x++) {
+                        System.out.println((x+1) + ". " + gm.subjects1sty[x]);
+                    }
+                    System.out.print("Please input here: ");
+                    choice = input.nextByte();
+                    input.nextLine();
+                    if (choice < 1 || choice > 9) {
+                        System.out.print("\033[H\033[2J"); 
+                        System.out.println("Invalid choice, please choose from 1 to 9.");
+                        System.out.println("Press enter to continue.");
+                        input.nextLine();
+                    }
+                    do {
+                        System.out.print("\033[H\033[2J"); 
+                        System.out.println("Currently putting grades for " + name + " on " + gm.subjects1sty[choice - 1]);
+                        System.out.println("");
+                        System.out.println("Grade list of " + name);
+                        for (int x = 0; x < gm.subjects1sty.length; x++) {
+                            System.out.println(gm.subjects1sty[x] + ": " + gm.getGrades1sty()[x]);
+                        }
+                        System.out.println("");
+                        System.out.print("Please put their grade in " + gm.subjects1sty[choice - 1] + " here: ");
+                        grade = input.nextDouble();
+                    } while (grade < 1.00 || grade > 5.00);
+                    gm.setGrade(year, choice - 1, grade);
+                    System.out.println("Updated grade list of " + name);
+                    if (grade >= 1.00 && grade <= 5.00) {
+                        for (int x = 0; x < gm.subjects1sty.length; x++) {
+                            System.out.println(gm.subjects1sty[x] + ": " + gm.getGrades1sty()[x]);
+                        }
+                    }
+                } while (choice < 0 || choice > 9);
+             } else  {
+                do {
+                    System.out.println("Please select a subject to put grade");
+                    for (int x = 0; x < gm.subjects2ndy.length; x++) {
+                        System.out.println((x + 1) + ". " + gm.subjects2ndy[x]);
+                    }
+                    System.out.print("Please input here: ");
+                    choice = input.nextByte();
+                    input.nextLine();
+
+                    if (choice < 1 || choice > 8) {
+                        System.out.println("Invalid choice, please choose from 1 to 8.");
+                        System.out.print("Press enter to continue.");
+                        input.nextLine();
+                    }
+                } while (choice < 1 || choice > 8);
+                do {
+                    System.out.print("Please put their grade in " + gm.subjects2ndy[choice - 1] + " here: ");
+                    grade = input.nextDouble();
+                    input.nextLine();
+                    if (grade < 1.00 || grade > 5.00) {
+                        System.out.println("Invalid grade, please enter a grade from 1.00 to 5.00.");
+                        System.out.print("Press enter to continue.");
+                        input.nextLine();
+                    }
+                } while (grade < 1.00 || grade > 5.00);
+                gm.setGrade(year, choice - 1, grade);
+                System.out.println("Updated grade list of " + name);
+                if (grade >= 1.00 && grade <= 5.00) {
+                    for (int x = 0; x < gm.subjects2ndy.length; x++)
+                    {
+                        System.out.println(gm.subjects2ndy[x] + ": " + gm.getGrades2ndy()[x]);
+                    }
+                }
+            }
+        }
+    }
+        
+            
+class calculate extends grademanager {
+    public double avg1st() {
+        double sum = 0.0;
+        double[] tempgrade = getGrades1sty(); 
+        
+        for (int x = 0; x < tempgrade.length; x++) {
+            sum += tempgrade[x];
+        }
+        
+        if (tempgrade.length > 0) {
+            return sum / tempgrade.length;
+        }
+        return 0.0;
+    }
+}
+
+class student extends user {
+    public student(String name) {
+        super(name, "student");
+    }
+        @Override
+        public void showMenu() {
+            System.out.println("Hello there! " + getName());
+            System.out.println("Welcome to Student Portal");
+        	System.out.println("What are we doing today?");
+        	System.out.println("1. Check grades");
+            System.out.println("2. Consult grades");
+            System.out.println("3. Close student menu and go back to log-in");
+        	System.out.print("Enter here: ");
+        }
+}
+
+class login {
+    public static void main(String[] agrs) {
+        String name;
+        String userRole; String lc_userRole;
+        char loop = 'N';
+        byte menuchoice; byte subjectchoice;
+        
+        Scanner input = new Scanner(System.in);
+        
+        do {
+        System.out.println("NEUST Grading Cycle\n");
+        System.out.print("Name: ");
+        name = input.nextLine();
+        System.out.print("School Occupation: ");
+        userRole = input.nextLine();
+        lc_userRole = userRole.toLowerCase();
+        
+        /* eto ang equivalent ng system("cls") ng c++ rito sa java, thank you gemini! */
+        System.out.print("\033[H\033[2J"); 
+        System.out.flush();
+
+        
+        switch (lc_userRole) {
+            case "professor": 
+                professor currentprof = new professor(name);
+                do {
+                    currentprof.showMenu();
+                    menuchoice = input.nextByte(); /* wala kasi scanner obj sa professor at student class kaya narito sila */
+                    switch (menuchoice) {
+                        case 1:
+                        System.out.print("\033[H\033[2J"); 
+                        System.out.flush();
+                        currentprof.inputgrades(input);
+                        subjectchoice = input.nextByte();
+                        break;
+                    }
+                } while (menuchoice != 4);
+                System.out.print("\033[H\033[2J"); 
+                System.out.flush();
+                System.out.println("Thank you for using our program!");
+                break;
+            case "student":
+                student currentstudent = new student(name);
+                do {
+                    currentstudent.showMenu();
+                    menuchoice = input.nextByte();
+                    System.out.print("\033[H\033[2J"); 
+                    System.out.flush();
+                } while (menuchoice != 3);
+                System.out.println("Thank you for using our program!");
+                break;
+            default:
+                System.out.println("Invalid user role/n");
+            }
+        } while (!lc_userRole.equals("student") && !lc_userRole.equals("professor"));
+    }
+}
